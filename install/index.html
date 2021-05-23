@@ -60,7 +60,7 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#edit-configuration-file">Edit Configuration File</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#run-service-and-disable-multicastpermalink">Run Service and disable multicastPermalink</a>
+    <li class="toctree-l2"><a class="reference internal" href="#run-service-and-disable-multicast">Run Service and disable multicast</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a>
     </li>
@@ -130,7 +130,7 @@
 </code></pre>
 <h3 id="edit-configuration-file">Edit Configuration File</h3>
 <p>After installation, but before starting, configure your node by editing /etc/opt/evio/config.json. The easiest way to get started with a working configuration is to request a trial account. You can also use the template from this page and add XMPP credentials, setting the IP address, and applying other configurations as needed</p>
-<h3 id="run-service-and-disable-multicastpermalink">Run Service and disable multicastPermalink</h3>
+<h3 id="run-service-and-disable-multicast">Run Service and disable multicast</h3>
 <p>Replace appbrXXXXX with the name of your Evio bridge in the command below to disable multicast:</p>
 <p>sudo systemctl start evio
 sudo ip link set appbrXXXXX multicast off</p>

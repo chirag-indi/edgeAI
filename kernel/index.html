@@ -62,15 +62,17 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#download-and-unpack-kernel-sources">Download and unpack kernel sources</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#sync-gode-with-git-repopermalink">Sync gode with git repoPermalink</a>
+    <li class="toctree-l3"><a class="reference internal" href="#sync-gode-with-git-repo">Sync gode with git repo</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#edit-config-to-enable-open-vswitch-modulespermalink">Edit .config to enable Open vSwitch modulesPermalink</a>
+    <li class="toctree-l3"><a class="reference internal" href="#create-baseline-kernel-build-config-file">Create baseline kernel build config file</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#edit-config-to-enable-open-vswitch-modules">Edit .config to enable Open vSwitch modules</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#build-the-kernel">Build the kernel</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#copy-kernel-image-and-modules">Copy kernel image and modules</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#edit-boot-config-filepermalink">Edit boot config filePermalink</a>
+    <li class="toctree-l3"><a class="reference internal" href="#edit-boot-config-file">Edit boot config file</a>
     </li>
         </ul>
     </li>
@@ -142,20 +144,20 @@ sudo apt install build-essential bc
 <p>Copy the downloaded archive to your home directory on the nano, and expand it with:</p>
 <pre><code>tar xf Tegra210_Linux_*.tbz2
 </code></pre>
-<h3 id="sync-gode-with-git-repopermalink">Sync gode with git repoPermalink</h3>
+<h3 id="sync-gode-with-git-repo">Sync gode with git repo</h3>
 <pre><code>cd Linux_for_Tegra
 ./source_sync.sh
 </code></pre>
 <p>When prompted, enter the git tag you want sync to, e.g. tegra-l4t-r32.5</p>
-<p>You may be asked multiple times.
-Create baseline kernel build config filePermalink</p>
+<p>You may be asked multiple times.</p>
+<h3 id="create-baseline-kernel-build-config-file">Create baseline kernel build config file</h3>
 <p>Select a directory for your build, e.g. /home/username/build-ovs</p>
 <pre><code>TEGRA_KERNEL_OUT=/home/username/build-ovs
 cd ~/Linux_for_Tegra/sources/kernel/kernel-4.9
 mkdir -p $TEGRA_KERNEL_OUT
 make ARCH=arm64 O=$TEGRA_KERNEL_OUT tegra_defconfig
 </code></pre>
-<h3 id="edit-config-to-enable-open-vswitch-modulespermalink">Edit .config to enable Open vSwitch modulesPermalink</h3>
+<h3 id="edit-config-to-enable-open-vswitch-modules">Edit .config to enable Open vSwitch modules</h3>
 <p>Now, you need to edit the .config file (with kernel build configuration parameters) to add Open vSwitch and GRE support as modules</p>
 <pre><code>vi $TEGRA_KERNEL_OUT/.config
 </code></pre>
@@ -189,7 +191,7 @@ pushd /
 sudo tar -xf ~/Linux_for_Tegra/rootfs/kernel-ovs-modules.tbz2
 popd
 </code></pre>
-<h3 id="edit-boot-config-filepermalink">Edit boot config filePermalink</h3>
+<h3 id="edit-boot-config-file">Edit boot config file</h3>
 <pre><code>Edit /boot/extlinux/extlinux.conf as follows to boot from the new kernel you just built as the primary option:
 
 TIMEOUT 30
