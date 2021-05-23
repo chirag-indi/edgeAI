@@ -58,6 +58,16 @@
                     </li>
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">Installing EdgeVPN</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#edit-configuration-file">Edit Configuration File</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#run-service-and-disable-multicastpermalink">Run Service and disable multicastPermalink</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#related-files-and-directories">Related Files and Directories</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#disabling-or-removing-the-software">Disabling or removing the software</a>
+    </li>
     </ul>
                     </li>
                 </ul>
@@ -106,6 +116,41 @@
             <div class="section">
               
                 <h1 id="install-the-vpn">Install the VPN</h1>
+<p>You need to add the evio repository to your node - this step needs only be done once for a host:</p>
+<pre><code>sudo bash
+# echo "deb [trusted=yes] https://apt.fury.io/evio/ /" &gt; /etc/apt/sources.list.d/fury.list
+# apt update
+</code></pre>
+<p>To install the package:</p>
+<pre><code># apt install evio
+</code></pre>
+<p>If the installation fails due to the libffi-dev dependence, you might need to add that manually:</p>
+<pre><code># apt-get install libffi-dev
+# apt install evio
+</code></pre>
+<h3 id="edit-configuration-file">Edit Configuration File</h3>
+<p>After installation, but before starting, configure your node by editing /etc/opt/evio/config.json. The easiest way to get started with a working configuration is to request a trial account. You can also use the template from this page and add XMPP credentials, setting the IP address, and applying other configurations as needed</p>
+<h3 id="run-service-and-disable-multicastpermalink">Run Service and disable multicastPermalink</h3>
+<p>Replace appbrXXXXX with the name of your Evio bridge in the command below to disable multicast:</p>
+<p>sudo systemctl start evio
+sudo ip link set appbrXXXXX multicast off</p>
+<p>Additionally, use systemctl to start/stop/restart/status evio.</p>
+<h3 id="dependencies">Dependencies</h3>
+<p>The installer has dependencies on, and will install python3 (&gt;=3.8), python3-dev (&gt;=3.8), python3-pip, iproute2, bridge-utils.</p>
+<h3 id="related-files-and-directories">Related Files and Directories</h3>
+<p>By default, the following files and directories are created:</p>
+<ul>
+<li>/opt/evio/tincan</li>
+<li>/opt/evio/controller/</li>
+<li>/etc/opt/evio/config.json</li>
+</ul>
+<h3 id="disabling-or-removing-the-software">Disabling or removing the software</h3>
+<p>To disable Start on Boot:</p>
+<pre><code>sudo systemctl disable evio
+</code></pre>
+<p>To remove the package:</p>
+<pre><code>sudo apt remove -y evio
+</code></pre>
               
             </div>
           </div>

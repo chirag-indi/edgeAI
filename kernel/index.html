@@ -64,6 +64,14 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#sync-gode-with-git-repopermalink">Sync gode with git repoPermalink</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#edit-config-to-enable-open-vswitch-modulespermalink">Edit .config to enable Open vSwitch modulesPermalink</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#build-the-kernel">Build the kernel</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#copy-kernel-image-and-modules">Copy kernel image and modules</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#edit-boot-config-filepermalink">Edit boot config filePermalink</a>
+    </li>
         </ul>
     </li>
     </ul>
@@ -142,65 +150,78 @@ sudo apt install build-essential bc
 <p>You may be asked multiple times.
 Create baseline kernel build config filePermalink</p>
 <p>Select a directory for your build, e.g. /home/username/build-ovs</p>
-<p>TEGRA_KERNEL_OUT=/home/username/build-ovs
+<pre><code>TEGRA_KERNEL_OUT=/home/username/build-ovs
 cd ~/Linux_for_Tegra/sources/kernel/kernel-4.9
 mkdir -p $TEGRA_KERNEL_OUT
-make ARCH=arm64 O=$TEGRA_KERNEL_OUT tegra_defconfig</p>
-<p>Edit .config to enable Open vSwitch modulesPermalink</p>
+make ARCH=arm64 O=$TEGRA_KERNEL_OUT tegra_defconfig
+</code></pre>
+<h3 id="edit-config-to-enable-open-vswitch-modulespermalink">Edit .config to enable Open vSwitch modulesPermalink</h3>
 <p>Now, you need to edit the .config file (with kernel build configuration parameters) to add Open vSwitch and GRE support as modules</p>
-<p>vi $TEGRA_KERNEL_OUT/.config </p>
+<pre><code>vi $TEGRA_KERNEL_OUT/.config
+</code></pre>
 <p>Uncomment/add the following config entries:</p>
-<p>CONFIG_NET_IPGRE=m
+<pre><code>CONFIG_NET_IPGRE=m
 CONFIG_NET_IPGRE_DEMUX=m
 CONFIG_OPENVSWITCH=m
 CONFIG_OPENVSWITCH_GRE=m
-CONFIG_OPENVSWITCH_VXLAN=m</p>
-<p>Build the kernelPermalink</p>
-<p>make ARCH=arm64 O=$TEGRA_KERNEL_OUT -j4</p>
+CONFIG_OPENVSWITCH_VXLAN=m
+</code></pre>
+<h3 id="build-the-kernel">Build the kernel</h3>
+<pre><code>make ARCH=arm64 O=$TEGRA_KERNEL_OUT -j4
+</code></pre>
 <p>You will be prompted about these (and perhaps other) options; enter your choices (N=no, m=module) manually:</p>
-<p>CONFIG_NET_MPLS_GSO=m
+<pre><code>CONFIG_NET_MPLS_GSO=m
 CONFIG_MPLS_ROUTING=n
-CONFIG_PPTP=n</p>
-<p>This will take several minutes to complete…
-Copy kernel image and modulesPermalink</p>
+CONFIG_PPTP=n
+</code></pre>
+<p>This will take more than an hour to complete.</p>
+<h3 id="copy-kernel-image-and-modules">Copy kernel image and modules</h3>
 <p>Once the kernel is compiled, you need to copy the kernel image to /boot:</p>
-<p>sudo cp $TEGRA_KERNEL_OUT/arch/arm64/boot/Image /boot/Image-ovs</p>
+<pre><code>sudo cp $TEGRA_KERNEL_OUT/arch/arm64/boot/Image /boot/Image-ovs
+</code></pre>
 <p>You also need to install and copy kernel modules:</p>
-<p>sudo make ARCH=arm64 O=$TEGRA_KERNEL_OUT modules_install \
+<pre><code>sudo make ARCH=arm64 O=$TEGRA_KERNEL_OUT modules_install \
 INSTALL_MOD_PATH=~/Linux_for_Tegra/rootfs/
 pushd ~/Linux_for_Tegra/rootfs
-tar --owner root --group root -cjf kernel-ovs-modules.tbz2 lib/modules
+sudo tar --owner root --group root -cjf kernel-ovs-modules.tbz2 lib/modules
 popd
 pushd /
-tar -xf ~/Linux_for_Tegra/rootfs/kernel-ovs-modules.tbz2
-popd</p>
-<p>Edit boot config filePermalink</p>
-<p>Edit /boot/extlinux/extlinux.conf as follows to boot from the new kernel you just built as the primary option:</p>
-<p>TIMEOUT 30
-DEFAULT primary</p>
-<p>MENU TITLE L4T boot options</p>
-<p>LABEL primary
-      MENU LABEL primary kernel
-      LINUX /boot/Image-ovs
-      INITRD /boot/initrd
-      APPEND ${cbootargs} quiet root=/dev/mmcblk0p1 rw rootwait rootfstype=ext4 console=ttyS0,115200n8 console=tty0 fbcon=map:0 net.ifnames=0 </p>
-<h1 id="when-testing-a-custom-kernel-it-is-recommended-that-you-create-a-backup-of">When testing a custom kernel, it is recommended that you create a backup of</h1>
-<h1 id="the-original-kernel-and-add-a-new-entry-to-this-file-so-that-the-device-can">the original kernel and add a new entry to this file so that the device can</h1>
-<h1 id="fallback-to-the-original-kernel-to-do-this">fallback to the original kernel. To do this:</h1>
-<h1 id="_1"></h1>
-<h1 id="1-make-a-backup-of-the-original-kernel">1, Make a backup of the original kernel</h1>
-<h1 id="sudo-cp-bootimage-bootimagebackup">sudo cp /boot/Image /boot/Image.backup</h1>
-<h1 id="_2"></h1>
-<h1 id="2-copy-your-custom-kernel-into-bootimage">2, Copy your custom kernel into /boot/Image</h1>
-<h1 id="_3"></h1>
-<h1 id="3-uncomment-below-menu-setting-lines-for-the-original-kernel">3, Uncomment below menu setting lines for the original kernel</h1>
-<h1 id="_4"></h1>
-<h1 id="4-reboot">4, Reboot</h1>
-<p>LABEL backup
+sudo tar -xf ~/Linux_for_Tegra/rootfs/kernel-ovs-modules.tbz2
+popd
+</code></pre>
+<h3 id="edit-boot-config-filepermalink">Edit boot config filePermalink</h3>
+<pre><code>Edit /boot/extlinux/extlinux.conf as follows to boot from the new kernel you just built as the primary option:
+
+TIMEOUT 30
+DEFAULT primary
+
+MENU TITLE L4T boot options
+
+LABEL primary
+    MENU LABEL primary kernel
+    LINUX /boot/Image-ovs
+    INITRD /boot/initrd
+    APPEND ${cbootargs} quiet root=/dev/mmcblk0p1 rw rootwait rootfstype=ext4 console=ttyS0,115200n8 console=tty0 fbcon=map:0 net.ifnames=0
+
+# When testing a custom kernel, it is recommended that you create a backup of
+# the original kernel and add a new entry to this file so that the device can
+# fallback to the original kernel. To do this:
+#
+# 1, Make a backup of the original kernel
+#      sudo cp /boot/Image /boot/Image.backup
+#
+# 2, Copy your custom kernel into /boot/Image
+#
+# 3, Uncomment below menu setting lines for the original kernel
+#
+# 4, Reboot
+
+LABEL backup
     MENU LABEL backup kernel
     LINUX /boot/Image
     INITRD /boot/initrd
-    APPEND ${cbootargs} quiet root=/dev/mmcblk0p1 rw rootwait rootfstype=ext4 console=ttyS0,115200n8 console=tty0 fbcon=map:0 net.ifnames=0</p>
+    APPEND ${cbootargs} quiet root=/dev/mmcblk0p1 rw rootwait rootfstype=ext4 console=ttyS0,115200n8 console=tty0 fbcon=map:0 net.ifnames=0
+</code></pre>
               
             </div>
           </div>
