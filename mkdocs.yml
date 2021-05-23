@@ -6,6 +6,9 @@ theme: readthedocs
 extra_css:
   - css/theme_extra.css
 
+edit_uri: edit/main/docs/
+
+site_author: Dr. Beth Plale and Chirag Shankar Indi
 
 markdown_extensions:
   - admonition
