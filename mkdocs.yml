@@ -10,5 +10,15 @@ edit_uri: edit/main/docs/
 
 site_author: Dr. Beth Plale and Chirag Shankar Indi
 
+pages:
+- Home: 'index.md'
+- VPN Installation: 
+  - 'Building a custom kernel': 'kernel.md'
+  - 'Installing EdgeVPN': 'install.md'
+- Meeting Recap:
+  - '12-May-2021': '12-May-2021.md'
+- Topology:
+  - Node Topology: 'topology.md'
+
 markdown_extensions:
   - admonition
