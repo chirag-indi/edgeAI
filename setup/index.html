@@ -139,12 +139,12 @@ apt-get install apt-transport-https ca-certificates curl gnupg lsb-release ssh v
 </code></pre>
 <p>This project is using <a href="https://k3s.io">K3S</a>, a Kubernetes distribution built for IoT &amp; Edge computing.</p>
 <p>Install and start K3S with a single command after replacing the correct flannel interface.</p>
-<pre><code>curl -sfL https://get.k3s.io | sh -s - --docker --flannel-iface appbrXXXXXX --write-kubeconfig-mode 644 --write-kubeconfig $HOME/.kube/config
+<pre><code># curl -sfL https://get.k3s.io | sh -s - --docker --flannel-iface appbrXXXXXX --write-kubeconfig-mode 644 --write-kubeconfig $HOME/.kube/config
 </code></pre>
 <p>After the Jetson nodes join the K3S cluster, label them as workers and respective node numbers which is used in <code>nodeSelector</code> attribute.</p>
-<pre><code>kubectl label node d2iedgeai2 node-role.kubernetes.io/worker=worker
+<pre><code>kubectl label node d2iedgeai node-role.kubernetes.io/worker=worker
+kubectl label node d2iedgeai2 node-role.kubernetes.io/worker=worker
 kubectl label node d2iedgeai3-desktop node-role.kubernetes.io/worker=worker
-kubectl label node d2iedgeai node-role.kubernetes.io/worker=worker
 kubectl label nodes d2iedgeai nodenumber=one
 kubectl label nodes d2iedgeai2 nodenumber=two
 kubectl label nodes d2iedgeai3-desktop nodenumber=three
