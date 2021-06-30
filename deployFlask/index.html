@@ -79,6 +79,8 @@
     </li>
     </ul>
                     </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../testFlask/">Testing the Flask application</a>
+                    </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Meeting Recap</span></p>
                 <ul>
@@ -131,6 +133,7 @@
               
                 <h1 id="deploying-a-simple-flask-application">Deploying a simple Flask application</h1>
 <p>The basic functionality of the application is to accept a request initiated in any of the pods and take a random walk through the remaining active pods dynamically fetching and using the flannel IP associated with the each of the pods.</p>
+<p>The code is currently in the <a href="www.github.com">repo</a>.</p>
 <h2 id="building-the-multiarch-docker-image">Building the Multiarch docker Image</h2>
 <p>A multiarchitecture Docker image facilitates the use of edge IoT devices to run the Flask server.
 This is done using Docker Buildx which is a CLI plugin that extends the docker command and is designed to work well for building for multiple platforms and not only for the architecture and operating system that the user invoking the build happens to run.</p>
@@ -314,7 +317,7 @@ roleRef:
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../12-May-2021/" class="btn btn-neutral float-right" title="12-May-2021">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../testFlask/" class="btn btn-neutral float-right" title="Testing the Flask application">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href="../setup/" class="btn btn-neutral" title="Cluster setup"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -348,7 +351,7 @@ roleRef:
         <span><a href="../setup/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../12-May-2021/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../testFlask/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
