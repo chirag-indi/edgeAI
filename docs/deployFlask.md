@@ -2,7 +2,8 @@
 
 The basic functionality of the application is to accept a request initiated in any of the pods and take a random walk through the remaining active pods dynamically fetching and using the flannel IP associated with the each of the pods.
 
-The code is currently in the [repo](www.github.com).
+The code is currently in the branch [flask-application](https://github.com/chirag-indi/edgeAI/tree/flask-application).
+
 ## Building the Multiarch docker Image
 
 A multiarchitecture Docker image facilitates the use of edge IoT devices to run the Flask server.
