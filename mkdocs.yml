@@ -12,9 +12,14 @@ site_author: Dr. Beth Plale and Chirag Shankar Indi
 
 pages:
 - Home: 'index.md'
-- VPN Installation: 
+- VPN Installation On Nvidia Jetson: 
   - 'Building a custom kernel': 'kernel.md'
   - 'Installing EdgeVPN': 'install.md'
+- Cluster Initialization and Setup:
+  - 'Prerequisites on the host system': 'prereq.md'
+  - 'Cluster setup': 'setup.md'
+  - 'Deploying a Flask application': 'deployFlask.md'
+  - 'Testing the Flask application': 'testFlask.md'
 - Meeting Recap:
   - '12-May-2021': '12-May-2021.md'
 - Topology:
