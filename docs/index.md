@@ -1,3 +1,0 @@
-# Edge AI Trust Project
-
-AI at the edge has the opportunity to embody greater forms of trust by utilizing the local VPN. Taking advantage of the VPN to share data, replicate findings, or expose behavior could have the effect of increased overall application resiliency as well as contributing to accountability and explainability.  We are standing up a small Nvidia Jetson Nano network using EdgeVPN.  The applications we hope to deploy are federated learning and redundant learning models.  The objective is to deploy co-resident tools that in effect "sense and respond" for enhanced accountability and explainability.
