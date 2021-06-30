@@ -129,26 +129,65 @@
 <pre><code>$ docker exec -it evio005-master bash
 </code></pre>
 <p>Install Docker and the prerequisites in the Docker Conatiner</p>
-<pre><code>curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-echo &quot;deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable&quot; | tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
-apt update
-apt-get install apt-transport-https ca-certificates curl gnupg lsb-release ssh vim docker-ce docker-ce-cli containerd.io -y
+<pre><code># curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+# echo &quot;deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable&quot; | tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
+# apt update
+# apt-get install apt-transport-https ca-certificates curl gnupg lsb-release ssh vim docker-ce docker-ce-cli containerd.io -y
 </code></pre>
 <p>Start the newly installed Docker service</p>
-<pre><code>systemctl start docker
+<pre><code># systemctl start docker
 </code></pre>
 <p>This project is using <a href="https://k3s.io">K3S</a>, a Kubernetes distribution built for IoT &amp; Edge computing.</p>
 <p>Install and start K3S with a single command after replacing the correct flannel interface.</p>
 <pre><code># curl -sfL https://get.k3s.io | sh -s - --docker --flannel-iface appbrXXXXXX --write-kubeconfig-mode 644 --write-kubeconfig $HOME/.kube/config
 </code></pre>
-<p>After the Jetson nodes join the K3S cluster, label them as workers and respective node numbers which is used in <code>nodeSelector</code> attribute.</p>
-<pre><code>kubectl label node d2iedgeai node-role.kubernetes.io/worker=worker
-kubectl label node d2iedgeai2 node-role.kubernetes.io/worker=worker
-kubectl label node d2iedgeai3-desktop node-role.kubernetes.io/worker=worker
-kubectl label nodes d2iedgeai nodenumber=one
-kubectl label nodes d2iedgeai2 nodenumber=two
-kubectl label nodes d2iedgeai3-desktop nodenumber=three
+<p>If this has executed correctly, you should see some output similar to</p>
+<pre><code>[INFO]  Finding release for channel stable
+[INFO]  Using v1.21.1+k3s1 as release
+[INFO]  Downloading hash https://github.com/k3s-io/k3s/releases/download/v1.21.1+k3s1/sha256sum-amd64.txt
+[INFO]  Downloading binary https://github.com/k3s-io/k3s/releases/download/v1.21.1+k3s1/k3s
+[INFO]  Verifying binary download
+[INFO]  Installing k3s to /usr/local/bin/k3s
+[INFO]  Creating /usr/local/bin/kubectl symlink to k3s
+[INFO]  Creating /usr/local/bin/crictl symlink to k3s
+[INFO]  Skipping /usr/local/bin/ctr symlink to k3s, command exists in PATH at /usr/bin/ctr
+[INFO]  Creating killall script /usr/local/bin/k3s-killall.sh
+[INFO]  Creating uninstall script /usr/local/bin/k3s-uninstall.sh
+[INFO]  env: Creating environment file /etc/systemd/system/k3s.service.env
+[INFO]  systemd: Creating service file /etc/systemd/system/k3s.service
+[INFO]  systemd: Enabling k3s unit
+Created symlink /etc/systemd/system/multi-user.target.wants/k3s.service → /etc/systemd/system/k3s.service.
+[INFO]  systemd: Starting k3s
 </code></pre>
+<p>Find out the node token of the k3s cluster. </p>
+<pre><code># cat /var/lib/rancher/k3s/server/node-token
+K10973d9d8a2e95eb3fb473559cad8b414268gf266d0f000a045ecbbfe08fdf64d4::server:19e2c05131439792rb723801c54d2f78
+</code></pre>
+<p>Test if you are able to ping each of the nodes from the master node/docker container.</p>
+<pre><code># ping 10.10.100.1
+# ping 10.10.100.2
+# ping 10.10.100.3
+</code></pre>
+<p>On each of the following nodes, execute the below command to join the k3s cluster after replacing the <code>K3S_URL</code>, <code>K3S_TOKEN</code> and <code>flannel-iface</code></p>
+<pre><code># curl -sfL https://get.k3s.io | K3S_URL=https://10.10.100.5:6443 K3S_TOKEN=K10973d9d8a2e95eb3fb473559cad8b414268gf266d0f000a045ecbbfe08fdf64d4::server:19e2c05131439792rb723801c54d2f78 sh -s - --docker --flannel-iface appbXXXXX
+</code></pre>
+<p>After the Jetson nodes join the K3S cluster, label them as workers and respective node numbers which is used in <code>nodeSelector</code> attribute.</p>
+<pre><code># kubectl label node d2iedgeai node-role.kubernetes.io/worker=worker
+# kubectl label node d2iedgeai2 node-role.kubernetes.io/worker=worker
+# kubectl label node d2iedgeai3-desktop node-role.kubernetes.io/worker=worker
+# kubectl label nodes d2iedgeai nodenumber=one
+# kubectl label nodes d2iedgeai2 nodenumber=two
+# kubectl label nodes d2iedgeai3-desktop nodenumber=three
+</code></pre>
+<p>Confirm all the nodes have joined the cluster and are in Ready status.</p>
+<pre><code># kubectl get nodes -o wide
+NAME                 STATUS   ROLES                  AGE   VERSION        INTERNAL-IP   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION     CONTAINER-RUNTIME
+d2iedgeai2           Ready    worker                 10h   v1.21.1+k3s1   10.10.100.2   &lt;none&gt;        Ubuntu 18.04.5 LTS   4.9.201+           docker://19.3.6
+d2iedgeai3-desktop   Ready    worker                 10h   v1.21.1+k3s1   10.10.100.3   &lt;none&gt;        Ubuntu 18.04.5 LTS   4.9.201+           docker://19.3.6
+d2iedgeai            Ready    worker                 10h   v1.21.1+k3s1   10.10.100.1   &lt;none&gt;        Ubuntu 18.04.5 LTS   4.9.201+           docker://19.3.6
+5f632c8fe254         Ready    control-plane,master   11h   v1.21.1+k3s1   10.10.100.5   &lt;none&gt;        Ubuntu 18.04.1 LTS   5.8.0-55-generic   docker://20.10.7
+</code></pre>
+<p>The current cluster setup is made of 4 nodes in total. The main docker container runs on the server as the master/control plane, and the 3 Jetsons are worker nodes.</p>
               
             </div>
           </div>
